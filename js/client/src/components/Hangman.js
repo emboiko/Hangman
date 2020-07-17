@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import M from "materialize-css";
 import generateRandomPhrase from "../utils/generateRandomPhrase";
 import stageZero from "../img/0.gif";
 import stageOne from "../img/1.gif";
@@ -7,29 +8,52 @@ import stageThree from "../img/3.gif";
 import stageFour from "../img/4.gif";
 import stageFive from "../img/5.gif";
 import stageSix from "../img/6.gif";
-import M from "materialize-css";
 
 export default class Hangman extends Component {
   constructor(props) {
     super(props);
-    const options = this.generateAlphabet().map((letter, i) => {
-      return <option key={i} value={letter}>{letter}</option>
-    });
     this.state = {
-      stages: [stageZero, stageOne, stageTwo, stageThree, stageFour, stageFive, stageSix],
+      stages: [
+        stageZero,
+        stageOne,
+        stageTwo,
+        stageThree,
+        stageFour,
+        stageFive,
+        stageSix
+      ],
       stage: 0,
       gameOver: false,
-      options,
-      secret: generateRandomPhrase(),
-      currentGuess: "",
       message: "",
+      guesses: [],
+      currentGuess: "A",
+      secret: generateRandomPhrase(),
+      choices: this.generateAlphabet().map((letter, i) => {
+        return <option key={i} value={letter}>{letter}</option>;
+      })
     };
+
+    const blanks = [];
+    Array.from(this.state.secret).forEach((letter, i) => {
+      if (letter === " ") {
+        blanks.push(
+          <span className="blank" key={i}>&ensp;</span>
+        );
+      } else {
+        blanks.push(
+          <span className="blank" key={i}>_&nbsp;</span>
+        );
+      }
+    })
+    this.state.blanks = blanks;
   }
+
 
   componentDidMount = () => {
     M.AutoInit();
     M.FormSelect.getInstance(document.getElementsByTagName("select")[0]);
   }
+
 
   generateAlphabet = () => {
     const alphabet = [];
@@ -41,38 +65,138 @@ export default class Hangman extends Component {
     return alphabet;
   }
 
-  guess = (e) => {
-    if (this.state.gameOver) return;
-    // almost done
+
+  guess = () => {
+    const guess = this.state.currentGuess;
+    const guesses = Array.from(this.state.guesses);
+
+    if (
+      this.state.gameOver
+      ||
+      guesses.includes(guess)
+    ) return;
+
+    const indices = [];
+    Array.from(this.state.secret).forEach((letter, i) => {
+      if (letter === guess) indices.push(i);
+    });
+
+    if (!indices.length) {
+      this.setState({ stage: this.state.stage + 1 });
+    }
+
+    if (this.state.stage >= 5) {
+      return this.setState(
+        { gameOver: true, message: "Game Over", stage: 6 }
+      );
+    }
+
+    const blanks = Array.from(this.state.blanks);
+    indices.forEach((index) => {
+      blanks[index] = <span className="blank" key={index}>
+        {this.state.secret[index]}
+      </span>;
+    });
+    this.setState({ blanks });
+
+    if (!guesses.includes(guess) && !indices.length) {
+      guesses.push(guess);
+    }
+    this.setState({ guesses });
+
+    let winner = true;
+    blanks.forEach((blank) => {
+      if (blank.props.children.trim() === "_") {
+        winner = false;
+      }
+    });
+
+    if (winner) this.setState({ gameOver: true, message: "Winner!" });
   }
 
+
+  newGame = () => {
+    const secret = generateRandomPhrase();
+    this.setState({
+      secret,
+      stage: 0,
+      gameOver: false,
+      guesses: [],
+      message: ""
+    });
+
+    const blanks = [];
+    Array.from(secret).forEach((letter, i) => {
+      if (letter === " ") {
+        blanks.push(
+          <span className="blank" key={i}>&emsp;</span>
+        );
+      } else {
+        blanks.push(
+          <span className="blank" key={i}>_&nbsp;</span>
+        );
+      }
+    });
+    this.setState({ blanks });
+  }
+
+
   handleChange = (e) => this.setState({ currentGuess: e.target.value });
+
 
   render() {
     return (
       <>
         <div className="center">
-          <p>{this.state.message}</p>
-          <button className="waves-effect waves-light btn mtop">New Game</button>
+
+          <button
+            onClick={this.newGame}
+            className="waves-effect waves-light btn red mtop"
+          >
+            New Game
+          </button>
+
           <div className="bbottom">
-            <img className="mtop" src={this.state.stages[this.state.stage]} alt="Hangman" />
+            <img
+              className="mtop"
+              src={this.state.stages[this.state.stage]}
+              alt="Hangman"
+            />
           </div>
-          <div className="mtop row">
-            {this.state.blanks}
-          </div>
+
           <div className="row">
-            <div className="input-field col s2 offset-s10">
-              <select onChange={this.handleChange} value={this.currentGuess}>
-                {this.state.options}
+            <div className="mtop col s4">
+              {this.state.blanks}
+              <h3 className="red-text">
+                {this.state.guesses.map((guess, i) => {
+                  return <span key={i}>{guess}</span>
+                })}
+              </h3>
+            </div>
+            <div className="col s4">
+              <h4 className="red-text">{this.state.message}</h4>
+              <h4>{this.state.gameOver ? this.state.secret : ""}</h4>
+            </div>
+
+            <div className="input-field col s1 offset-s2">
+              <select
+                name="currentGuess"
+                id="currentGuess"
+                onChange={this.handleChange}
+                value={this.state.currentGuess}
+              >
+                {this.state.choices}
               </select>
               <button
                 onClick={this.guess}
-                className="waves-effect waves-light btn mtop guess"
+                className="waves-effect waves-light btn mtop red guess"
               >
                 Guess
               </button>
             </div>
+
           </div>
+
         </div>
       </>
     );

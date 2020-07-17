@@ -8,7 +8,7 @@ from tkinter import (
     StringVar,
     _setit
 )
-from os.path import dirname, join
+from os.path import dirname
 from string import ascii_uppercase
 from generate_random_phrase import generate_random_phrase
 
@@ -107,9 +107,10 @@ class Hangman:
 
     def new_game(self):
         """
-            - Reset GUI & flags from previous round, fill optionmenu with a fresh alphabet
-            - Populate self.secret and letter_frame with a new secret phrase, initalized
-            to underscores (except for whitespace)
+            - Reset GUI & flags from previous round, fill optionmenu with a 
+            fresh alphabet
+            - Populate self.secret and letter_frame with a new secret phrase, 
+            initalized to underscores (except for whitespace)
         """
 
         self.hangman.config(image=self.stages[0])
@@ -122,19 +123,19 @@ class Hangman:
         self.blanks = []
         self.game_over = False
 
-        self.secret = generate_random_phrase(lower=1, upper=3)
+        self.secret = generate_random_phrase()
 
         for i, letter in enumerate(self.secret):
             if letter == " ":
-                letter_label = Label(self.letter_frame, text=" ")
+                letter_label = Label(self.letter_frame, text="  ")
                 self.blanks.append(letter_label)
             else :
                 letter_label = Label(self.letter_frame, text="_")
                 self.blanks.append(letter_label)
 
             letter_label.config(font=('calibri', 15))
-            letter_label.grid(row=0, column=i)
-            
+            letter_label.grid(row=0, column=i, padx=1)
+
 
         self.option_menu["menu"].delete(0,"end")
         for char in ascii_uppercase: 
@@ -167,8 +168,7 @@ class Hangman:
 
         if self.stage >= 6:
             self.game_over = True
-            self.result_label.config(text="Game Over.")
-            return
+            return self.result_label.config(text=f"Game Over.\n{self.secret}")
 
         for i in indices:
             self.blanks[i].config(text=guessed)
@@ -207,7 +207,7 @@ class Hangman:
 
         return (width_offset, height_offset)
 
-    
+
 def main():
     root = Tk()
     gui = Hangman(root)

@@ -158,27 +158,14 @@ export default class Hangman extends Component {
 
           <div className="bbottom">
             <img
-              className="mtop"
+              className="mtop responsive-img"
               src={this.state.stages[this.state.stage]}
               alt="Hangman"
             />
           </div>
 
           <div className="row">
-            <div className="mtop col s4">
-              {this.state.blanks}
-              <h3 className="red-text">
-                {this.state.guesses.map((guess, i) => {
-                  return <span key={i}>{guess}</span>
-                })}
-              </h3>
-            </div>
-            <div className="col s4">
-              <h4 className="red-text">{this.state.message}</h4>
-              <h4>{this.state.gameOver ? this.state.secret : ""}</h4>
-            </div>
-
-            <div className="input-field col s1 offset-s2">
+            <div className="input-field col s4 ">
               <select
                 name="currentGuess"
                 id="currentGuess"
@@ -194,6 +181,19 @@ export default class Hangman extends Component {
                 Guess
               </button>
             </div>
+            <div className="mtop col s4">
+              {this.state.blanks}
+              <h3 className="red-text">
+                {this.state.guesses.map((guess, i) => {
+                  return <span key={i}>{guess}</span>
+                })}
+              </h3>
+            </div>
+            <div className="mtop col s4">
+              <h5 className="red-text">{this.state.message}</h5>
+              <h5>{this.state.gameOver ? this.state.secret : ""}</h5>
+            </div>
+
 
           </div>
 

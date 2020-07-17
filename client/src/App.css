@@ -4,12 +4,30 @@
     padding: 0;
 }
 
+body {
+    overflow: hidden;
+}
+
+.container {
+    margin-top: 10%;
+    background-color: white;
+    box-shadow: 10px 10px 10px 10px ;
+}
+
 .mtop {
     margin-top: 20px;
 }
 
 .mbottom {
     margin-bottom: 20px;
+}
+
+.mright {
+    margin-right: 20px;
+}
+
+.mleft {
+    margin-left: 20px;
 }
 
 .bbottom {
@@ -22,4 +40,13 @@
 
 .guess {
     display: inline;
+}
+
+.input-field {
+    padding: 0 10% !important;
+}
+
+nav .brand-logo{
+    font-family: "Staatliches";
+    font-size: 50px;
 }

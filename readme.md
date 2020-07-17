@@ -7,10 +7,14 @@ cd python/
 python hangman.py
 ```
 
+###### or
+
 #### React.js:
 
+- https://hoistman.herokuapp.com/
+
 ```
-cd js/client/
+cd client/
 npm install
 npm start
 ```

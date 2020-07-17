@@ -5,7 +5,7 @@ export default class Header extends Component {
     return (
       <nav>
         <div className="nav-wrapper grey darken-4">
-          <span className="brand-logo center ">Hangman</span>
+          <span className="brand-logo center">Hangman</span>
         </div>
       </nav>
     );

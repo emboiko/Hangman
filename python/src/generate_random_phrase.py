@@ -258,10 +258,18 @@ def generate_random_phrase(lower: int = 1, upper: int = 3):
         more than one word, those words will share a context, making the puzzle
         more reasonable to guess at. 
     """
-    if (lower < 1) or (upper < lower): raise Exception("Upper range must be higher than lower")
+    if (lower < 1) or (upper < lower): raise Exception(
+        "Upper range must be higher or equal to lower"
+    )
 
     span = range(lower, upper+1)
     count = choice(span)
 
     phrase = [choice(word_list) for i in range(count)]
     return " ".join(phrase).upper()
+
+
+def generate_random_words(count: int = 1):
+    """Return a given # of random words separated by whitespace"""
+
+    return " ".join([choice(word_list) for _ in range(count)]).upper()

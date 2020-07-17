@@ -4,13 +4,14 @@ from tkinter import (
     Label,
     Button,
     Frame,
+    Scale,
     OptionMenu,
     StringVar,
     _setit
 )
 from os.path import dirname
 from string import ascii_uppercase
-from generate_random_phrase import generate_random_phrase
+from generate_random_phrase import generate_random_phrase, generate_random_words
 
 
 class Hangman:
@@ -27,6 +28,7 @@ class Hangman:
         self.master.title("Hangman")
         self.master.iconbitmap(f"{dirname(__file__)}/img/icon.ico")
         self.center_window()
+        self.master.resizable(False, False)
 
         self.stages = []
         self.stages.append(PhotoImage(
@@ -63,10 +65,25 @@ class Hangman:
         self.current_guess = StringVar(self.master)
         self.current_guess.set("A")
 
-        self.btn_frame = Frame(self.master)
+        self.btn_frame = Frame(
+            self.master, 
+            borderwidth=2, 
+            relief="groove", 
+            padx=10,
+            pady=10
+        )
 
         self.option_menu = OptionMenu(self.btn_frame, self.current_guess, "")
-        self.option_menu.config(font=('calibri', 9), width=3)
+        self.option_menu.config(font="Calibri 9", width=3)
+
+        self.scale = Scale(
+            self.btn_frame,
+            orient="horizontal",
+            from_=1,
+            to=5,
+            label="          Words"
+        )
+        self.scale.set(3)
 
         self.new_game_btn = Button(
             self.btn_frame, 
@@ -81,18 +98,25 @@ class Hangman:
             command=lambda: self.guess(self.current_guess.get())
         )
 
-        self.letter_frame = Frame(self.master)
+        self.letter_frame = Frame(
+            self.master,
+            borderwidth=2, 
+            relief="groove", 
+            padx=10,
+            pady=10
+        )
 
-        self.result_label = Label(self.master)
+        self.result_label = Label(self.master, font="Calibri 20", foreground="red")
 
         # Layout
         self.master.columnconfigure(0, weight=1)
         self.hangman.grid(row=0, column=0)
-        self.btn_frame.grid(row=1, column=0)
-        self.new_game_btn.grid(row=0, column=1, columnspan=2, pady=10)
-        self.guess_btn.grid(row=1, column=1, padx=2)
-        self.option_menu.grid(row=1, column=2)
-        self.letter_frame.grid(row=2, column=0, pady=20)
+        self.btn_frame.grid(row=1, column=0, pady=20)
+        self.scale.grid(row=0, column=1, columnspan=2, pady=10)
+        self.new_game_btn.grid(row=1, column=1, columnspan=2, pady=10)
+        self.guess_btn.grid(row=2, column=1, padx=2)
+        self.option_menu.grid(row=2, column=2)
+        self.letter_frame.grid(row=2, column=0, pady=10)
         self.result_label.grid(row=3, column=0)
 
         # Initalize
@@ -123,7 +147,8 @@ class Hangman:
         self.blanks = []
         self.game_over = False
 
-        self.secret = generate_random_phrase()
+        # self.secret = generate_random_phrase()
+        self.secret = generate_random_words(self.scale.get())
 
         for i, letter in enumerate(self.secret):
             if letter == " ":
@@ -184,7 +209,7 @@ class Hangman:
 
 
     def center_window(self):
-        self.master.geometry("600x600")
+        self.master.geometry("600x800")
         self.master.update()
         (width_offset, height_offset)=self.get_offset(self.master)
         self.master.geometry(f"+{width_offset}+{height_offset}")

@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    margin-top: 10%;
+    margin: 10vh auto;
     background-color: white;
     box-shadow: 10px 10px 10px 10px ;
 }

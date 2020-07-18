@@ -176,9 +176,15 @@ export default class Hangman extends Component {
               </select>
               <button
                 onClick={this.guess}
-                className="waves-effect waves-light btn mtop red guess"
+                className="waves-effect waves-light btn mtop red guess hide-on-med-and-down"
               >
                 Guess
+              </button>
+              <button
+                onClick={this.guess}
+                className="waves-effect waves-light btn mtop red guess-mobile hide-on-large-only	"
+              >
+                ⏎
               </button>
             </div>
             <div className="mtop col s4">

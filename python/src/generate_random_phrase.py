@@ -258,6 +258,7 @@ def generate_random_phrase(lower: int = 1, upper: int = 3):
         more than one word, those words will share a context, making the puzzle
         more reasonable to guess at. 
     """
+    
     if (lower < 1) or (upper < lower): raise Exception(
         "Upper range must be higher or equal to lower"
     )
